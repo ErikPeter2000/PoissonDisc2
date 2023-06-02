@@ -3,3 +3,7 @@
 ################################################################################
 
 /src/PoissonDisc2/.vs/PoissonDisc2
+/src/PoissonDisc2/bin/Debug/net6.0-windows
+/src/PoissonDisc2/obj
+/src/PoissonDiskLogic/bin/Debug/net6.0
+/src/PoissonDiskLogic/obj

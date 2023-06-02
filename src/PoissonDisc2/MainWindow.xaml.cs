@@ -13,16 +13,22 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PoissonDisc2
+namespace PoissonDisc2UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainWindowViewModel Logic => DataContext as MainWindowViewModel;
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void btRender_Click(object sender, RoutedEventArgs e)
+        {
+            Logic.Render(1024, 1024, 20, 0);
         }
     }
 }
