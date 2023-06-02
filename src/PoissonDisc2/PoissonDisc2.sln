@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoissonDisc2UI", "PoissonDisc2UI.csproj", "{C54D0E90-3B71-4109-A364-F1E79D732551}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoissonDiskLogic", "..\PoissonDiskLogic\PoissonDiskLogic.csproj", "{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C54D0E90-3B71-4109-A364-F1E79D732551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C54D0E90-3B71-4109-A364-F1E79D732551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C54D0E90-3B71-4109-A364-F1E79D732551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C54D0E90-3B71-4109-A364-F1E79D732551}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8170337-D54C-43F6-9CB8-799B8C7E722F}
+	EndGlobalSection
+EndGlobal
