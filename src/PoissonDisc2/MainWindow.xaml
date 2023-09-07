@@ -5,16 +5,53 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PoissonDisc2UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <local:IntToString x:Key="IntToString"/>
+    </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Image x:Name="cvCanvas" Source="{Binding TextureDisplay}"/>
-        <Button x:Name="btRender" Content="Render" Padding="10,4" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btRender_Click"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="cvCanvas" Grid.Column="1" Source="{Binding TextureDisplay}"/>
+        <StackPanel>
+            <TextBox x:Name="tbxWidth" Text="W" Margin="3"/>
+            <TextBox x:Name="tbxHeight" Text="H" Margin="3"/>
+            <ListView ItemsSource="{Binding Path=ParamterList}" Tag="{Binding .}" ScrollViewer.VerticalScrollBarVisibility="Auto" MinHeight="300" Margin="3" SelectedIndex="{Binding Path=SelectedPass}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="RenderParameters">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Radius (Pixels): " Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,3,3,3"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" Margin="2,3" Text="{Binding Path=Radius, Mode=TwoWay, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToString}}"/>
+
+                            <TextBlock Text="Seed: " Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,3,3,3"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" Margin="2,3" Text="{Binding Seed, UpdateSourceTrigger=LostFocus, Converter={StaticResource IntToString}}"/>
+
+                            <TextBlock Text="Type: " Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,3,3,3"/>
+                            <ComboBox Grid.Column="1" SelectedItem="{Binding Generationtype}" ItemsSource="{Binding GenerationTypes, Mode=OneWay}" Grid.Row="2" HorizontalAlignment="Stretch" Margin="2,3" VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ListView>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="3">
+                <Button x:Name="btAdd" IsEnabled="{Binding Path=CanAdd}"  Click="btAdd_Click" Content="+" Padding="3,3" Margin="1,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ElementName=btAdd, Path=ActualHeight}"/>
+                <Button x:Name="btDelete" IsEnabled="{Binding Path=CanDelete}" Click="btDelete_Click" Content="-" Padding="3,3" Margin="1,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ElementName=btDelete, Path=ActualHeight}"/>
+            </StackPanel>
+            <Button x:Name="btRender" Click="btRender_Click" Margin="2" Content="Render" Padding="20,3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button x:Name="btExport" Click="btRender_Click" Margin="2" Content="Export" Padding="20,3" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </StackPanel>
     </Grid>
 </Window>
