@@ -28,7 +28,24 @@ namespace PoissonDisc2UI
 
         private void btRender_Click(object sender, RoutedEventArgs e)
         {
-            Logic.Render(1024, 1024, 20, 0);
+            int.TryParse(tbxWidth.Text, out int width);
+            int.TryParse(tbxHeight.Text, out int height);
+            Logic.Render(width, height, 20, 0);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Logic.Load();
+        }
+
+        private void btAdd_Click(object sender, RoutedEventArgs e)
+        {
+            Logic.AddPass();
+        }
+
+        private void btDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Logic.RemovePass();
         }
     }
 }
