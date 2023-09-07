@@ -1,4 +1,4 @@
-# PoissonDisc2
+# Voronoi Generator
 
 This is a WPF application for quickly rendering and saving tiled voronoi textures as .png files for use in external applications.
 Vornoi images are made by scattering some points (samples) on a grid and then coloring the individual pixels based on their distances to these points.
