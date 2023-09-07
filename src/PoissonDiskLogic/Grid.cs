@@ -40,6 +40,10 @@ namespace PoissonDiskLogic
         }
         public Grid(int width, int height, int radius)
         {
+            if (radius == 0)
+                throw new ArgumentException("Radius must be greater than 0");
+            if (width == 0 || height == 0)
+                throw new ArgumentException("Dimensions must be greater than 0");
             ResolutionX = width;
             ResolutionY = height;
             Radius = radius;
@@ -128,11 +132,12 @@ namespace PoissonDiskLogic
             }
             return true;
         }
-        public float NearestDistance(float x, float y, int search)
+        public ValueTuple<float, Vector2> NearestDistance(float x, float y, int search)
         {
             int xPos = lengthToGrid(x, CellsX);
             int yPos = lengthToGrid(y, CellsY);
             float distance = float.MaxValue;
+            Vector2 point = InternalPoints[0];
             for (int xScan = -search; xScan <= search; xScan++)
             {
                 for (int yScan = -search; yScan <= search; yScan++)
@@ -154,11 +159,88 @@ namespace PoissonDiskLogic
                         //x==(int)targetx && y == (int)targety ?100:0;
                         float newdistance = MathF.Sqrt(distanceX* distanceX + distanceY* distanceY);
                         if (newdistance < distance)
+                        {
                             distance = newdistance;
+                            point = target;
+                        }
                     }
                 }
             }
-            return distance;
+            return new ValueTuple<float, Vector2>(distance, point);
+        }
+        public float GetDistanceToEdge(float x, float y, int search)
+        {
+            int xPos = lengthToGrid(x, CellsX);
+            int yPos = lengthToGrid(y, CellsY);
+
+            Vector2 p1 = InternalPoints[0];
+            Vector2 p2 = InternalPoints[1]; 
+            double distance1 = float.MaxValue;
+            double distance2 = float.MaxValue;
+            for (int xScan = -search; xScan <= search; xScan++)
+            {
+                for (int yScan = -search; yScan <= search; yScan++)
+                {
+                    int gridX = (xScan + xPos + CellsX) % CellsX;
+                    int gridY = (yScan + yPos + CellsY) % CellsY;
+
+
+                    if (IsCellOccupied(gridX, gridY))
+                    {
+                        Vector2 target = GetPointByCell(gridX, gridY);
+                        ////tilable wrapping
+                        float distanceX = MathF.Abs(target.X - x);
+                        float distanceY = MathF.Abs(target.Y - y);
+                        if (distanceX > ResolutionX / 2)
+                            distanceX = distanceX - ResolutionX;
+                        if (distanceY > ResolutionY / 2)
+                            distanceY = distanceY - ResolutionY;
+
+                        //x==(int)targetx && y == (int)targety ?100:0;
+                        float newdistance = MathF.Sqrt(distanceX * distanceX + distanceY * distanceY);
+                        if (newdistance < distance1)
+                        {
+                            distance2 = distance1;
+                            distance1 = newdistance;
+                            p2 = p1;
+                            p1 = target;
+                        }
+                        if (newdistance < distance2 & target != p1)
+                        {
+                            distance2 = newdistance;
+                            p2 = target;
+                        }
+                    }
+                }
+            }
+
+            //distance to bisector of both points
+
+            if (x - p1.X < -ResolutionX / 2)
+                p1.X -= ResolutionX - 1;
+            if (x - p2.X < -ResolutionX / 2)
+                p2.X -= ResolutionX - 1;
+
+            if (y - p1.Y < -ResolutionY / 2)
+                p1.Y -= ResolutionY - 1;
+            if (y - p2.Y < -ResolutionY / 2)
+                p2.Y -= ResolutionY - 1;
+
+            if (x - p1.X > ResolutionX / 2)
+                p1.X += ResolutionX - 1;
+            if (x - p2.X > ResolutionX / 2)
+                p2.X += ResolutionX - 1;
+
+            if (y - p1.Y > ResolutionY / 2)
+                p1.Y += ResolutionY - 1;
+            if (y - p2.Y > ResolutionY / 2)
+                p2.Y += ResolutionY - 1;
+
+            Vector2 midpoint = (p1 + p2) / 2;
+            float a = (p2.X - p1.X) / (p2.Y - p1.Y);
+            float b = 1;
+            float c = -a * midpoint.X - midpoint.Y;
+            return MathF.Abs(a * x + b * y + c) / MathF.Sqrt(a * a + b * b);
         }
     }
 }
