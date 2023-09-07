@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NoiseGeneration
 {
-    public class RenderParameters
+    public class RenderParameters : INotifyPropertyChanged
     {
+        public IEnumerable<GenerationType> GenerationTypes { get; } = Enum.GetValues(typeof(GenerationType)).Cast<GenerationType>();
         public bool ShowInPreview { get; set; }
-        public int Radius { get; set; }
+        public int Radius { 
+            get; 
+            set; }
         public int Seed { get; set; }
         public int RejectionSamples { get; set; }
         public GenerationType Generationtype { get; set; }
@@ -21,5 +25,7 @@ namespace NoiseGeneration
             Seed = seed;
             RejectionSamples = rejectionSamples;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

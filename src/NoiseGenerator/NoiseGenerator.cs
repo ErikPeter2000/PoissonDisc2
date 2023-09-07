@@ -11,13 +11,13 @@ namespace NoiseGeneration
                 case GenerationType.Distance:
                     return new VoronoiDistance();
                 case GenerationType.DistanceToEdge:
-                    throw new NotImplementedException();
+                    return new VoronoiDistanceOnEdge();
                 case GenerationType.Cell:
-                    throw new NotImplementedException();
+                    return new VoronoiCell();
                 case GenerationType.RawSample:
-                    throw new NotImplementedException();
+                    return new VoronoiRawSample();
                 default:
-                    throw new NotImplementedException();
+                    return new VoronoiRawSample();
             }
         }
         public static ITexture Generate(int width, int height, RenderParameters[] parameters)
@@ -38,9 +38,10 @@ namespace NoiseGeneration
 
         private static ITexture generateRGBATexture(int width, int height, RenderParameters[] parameters)
         {
-            ITexture[] channels = new ITexture[3];
-            RGBTexture texture = new RGBTexture(width, height, parameters.Max(x => x.Radius), false);
-            for (int i = 0; i < 3; i++)
+            int channelCount = Math.Min(parameters.Length, 4);
+            ITexture[] channels = new ITexture[channelCount];
+            RGBTexture texture = new RGBTexture(width, height, parameters.Max(x => x.Radius), true, channelCount);
+            for (int i = 0; i < channelCount; i++)
             {
                 var p = parameters[i];
                 PoissonSampler sampler = new PoissonSampler(width, height, p.Radius, p.Seed, p.RejectionSamples);
@@ -49,15 +50,15 @@ namespace NoiseGeneration
                 INoiseAlgorithm noiseAlgorithm = getAlgorithm(p.Generationtype);
                 channels[i] = noiseAlgorithm.RenderNoise(grid, false);
             }
-            float[] data = new float[3];
+            float[] data = new float[channelCount];
             for (int x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    data[0] = channels[0].ValueData[x, y][0];
-                    data[1] = channels[1].ValueData[x, y][0];
-                    data[2] = channels[2].ValueData[x, y][0];
-                    data[4] = channels[4].ValueData[x, y][4];
+                    for (int i = 0; i < channelCount; i++)
+                    {
+                        data[i] = channels[i].ValueData[x, y][0];
+                    }
                     texture.SetPixel(x, y, data);
                 }
             }

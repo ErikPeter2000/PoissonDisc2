@@ -11,7 +11,7 @@ namespace NoiseGeneration
 {
     public class RGBTexture : ITexture
     {
-        public int Channels => 3;
+        public int DefinedChannels { get; } = 3;
 
         public int Width { get; }
 
@@ -25,16 +25,19 @@ namespace NoiseGeneration
         private Bitmap _cacheBitmap;
 
         private bool Alpha;
-        public RGBTexture(int width, int height, float maxDisplayValue, bool cache, bool alpha = false)
+        public RGBTexture(int width, int height, float maxDisplayValue, bool cache, int channels)
         {
             Width = width;
             Height = height;
             MaxDisplayValue = maxDisplayValue;
             Cache = cache;
             ValueData = new float[Width, Height][];
-            Alpha = alpha;
-            if (Alpha)
+            DefinedChannels = channels;
+            if (DefinedChannels == 4)
+            {
+                Alpha = true;
                 _cacheBitmap = new Bitmap(width, height, PixelFormat.Format64bppArgb);
+            }
             else
                 _cacheBitmap = new Bitmap(width, height, PixelFormat.Format48bppRgb);
         }
@@ -46,28 +49,13 @@ namespace NoiseGeneration
         private Bitmap renderBitmap()
         {
             _cacheBitmap = new Bitmap(Width, Height, _cacheBitmap.PixelFormat);
-            var BoundsRect = new Rectangle(0, 0, _cacheBitmap.Width, _cacheBitmap.Height);
-            BitmapData bmpData = _cacheBitmap.LockBits(BoundsRect, ImageLockMode.WriteOnly, _cacheBitmap.PixelFormat);
-            IntPtr ptr = bmpData.Scan0;
-
-            int byte_Count = bmpData.Stride * _cacheBitmap.Height;
-            int bytesPerColor = bmpData.Stride / _cacheBitmap.Width;
-            var rgbValues = new byte[byte_Count];
             for (int x = 0; x < Width; x++)
             {
                 for (int y = 0; y < Height; y++)
                 {
-                    float value = ValueData[x, y][0];
-                    int index = bmpData.Stride * y + x * bytesPerColor;
-                    byte[] bytes = BitConverter.GetBytes((int)MathF.Min(value * MaxDisplayValue, MaxDisplayValue));
-                    for (int i = 0; i < bytesPerColor; i++)
-                    {
-                        rgbValues[index + i] = bytes[i];
-                    }
+                    SetPixel(x, y, ValueData[x, y]);
                 }
             }
-            Marshal.Copy(rgbValues, 0, ptr, byte_Count);
-            _cacheBitmap.UnlockBits(bmpData);
 
             return _cacheBitmap;
         }
@@ -99,7 +87,9 @@ namespace NoiseGeneration
             {
                 int r = (int)MathF.Min(data[0]/MaxDisplayValue*255, 255);
                 int g = (int)MathF.Min(data[1] / MaxDisplayValue * 255, 255);
-                int b = (int)MathF.Min(data[2] / MaxDisplayValue * 255, 255);
+                int b = 0;
+                if (DefinedChannels>2)
+                    b = (int)MathF.Min(data[2] / MaxDisplayValue * 255, 255);
                 if (Alpha)
                 {
                     int a = (int)MathF.Min(data[3] / MaxDisplayValue * 255, 255);

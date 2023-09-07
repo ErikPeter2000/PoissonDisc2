@@ -12,7 +12,7 @@ namespace NoiseGeneration
     {
         public int Width { get; }
         public int Height { get; }
-        public int Channels { get; }
+        public int DefinedChannels { get; }
         public float MaxDisplayValue { get; }
         public bool Cache { get; }
         public Bitmap GetBitmap();

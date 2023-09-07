@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NoiseGeneration
 {
-    public class VoronoiDistance : INoiseAlgorithm
+    public class VoronoiCell : INoiseAlgorithm
     {
         public ITexture RenderNoise(Grid grid, bool cache)
         {
@@ -17,8 +17,8 @@ namespace NoiseGeneration
             {
                 for (int y = 0; y < texture.Height; y++)
                 {
-                    float distance = grid.NearestDistance(x, y, 2).Item1;
-                    float value = distance;
+                    var point = grid.NearestDistance(x, y, 2).Item2;
+                    float value = (point.X*53+ point.Y*177) % 21 / 21*max;
                     texture.SetPixel(x, y, value);
                 }
             }

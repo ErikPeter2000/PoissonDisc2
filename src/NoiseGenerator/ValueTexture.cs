@@ -11,7 +11,7 @@ namespace NoiseGeneration
 {
     public class ValueTexture : ITexture
     {
-        public int Channels => 1;
+        public int DefinedChannels => 1;
 
         public int Width { get; }
 
