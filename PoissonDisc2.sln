@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoissonDisc2UI", "PoissonDisc2UI.csproj", "{C54D0E90-3B71-4109-A364-F1E79D732551}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoissonDisc2UI", "src\PoissonDisc2\PoissonDisc2UI.csproj", "{C54D0E90-3B71-4109-A364-F1E79D732551}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoissonDiskLogic", "..\PoissonDiskLogic\PoissonDiskLogic.csproj", "{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoissonDiskLogic", "src\PoissonDiskLogic\PoissonDiskLogic.csproj", "{CC28D2FB-51F1-44B5-B57C-D5CFD4185363}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoiseGeneration", "..\NoiseGenerator\NoiseGeneration.csproj", "{DE1DA24C-72A0-4931-8EB2-8CD2775ECA16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoiseGeneration", "src\NoiseGenerator\NoiseGeneration.csproj", "{DE1DA24C-72A0-4931-8EB2-8CD2775ECA16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
