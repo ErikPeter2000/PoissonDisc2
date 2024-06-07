@@ -1,9 +1,9 @@
-# PoissonDisc2
+# Voronoi Generator
 
-This is a WPF application for quickly rendering and saving tiled voronoi textures as .png files for use in external applications.
+This is an (incomplete) WPF application for quickly rendering and saving tiled voronoi textures as .png files for use in external applications.
 Vornoi images are made by scattering some points (samples) on a grid and then coloring the individual pixels based on their distances to these points.
 
-Currently, this applications supports voronoi:
+This application will allow writing the following variations of the voronoi texture to the individual RGBA channels in an image.
 - Distance to point: The classic, also called cellular noise or worley noise. Pixel intensity is defined by the distance to the nearest sample.
 - Distance to edge: Pixel intensity is defined by the distance to the perpendicular bisector given by the closest two points.
 - Random color: Pixel intensity is randomly generated with the closest pixel as the seed.
