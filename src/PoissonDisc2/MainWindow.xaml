@@ -53,7 +53,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3">
                 <Button x:Name="btRender" Click="btRender_Click" Margin="2" Content="Render" Padding="20,3"/>
-                <Button x:Name="btExport" Click="btRender_Click" Margin="2" Content="Export" Padding="20,3" IsEnabled="False" ToolTip="Not implemented."/>
+                <Button x:Name="btExport" Click="btExport_Click" Margin="2" Content="Export" Padding="20,3" IsEnabled="{Binding CanExport}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

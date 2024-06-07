@@ -39,19 +39,12 @@ namespace PoissonDisc2UI
             Logic.Render(width, height);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Logic.OnLoad();
-        }
+        private void Window_Loaded(object sender, RoutedEventArgs e) => Logic.OnLoad();
 
-        private void btAdd_Click(object sender, RoutedEventArgs e)
-        {
-            Logic.AddPass();
-        }
+        private void btAdd_Click(object sender, RoutedEventArgs e) => Logic.AddPass();
 
-        private void btDelete_Click(object sender, RoutedEventArgs e)
-        {
-            Logic.RemovePass();
-        }
+        private void btDelete_Click(object sender, RoutedEventArgs e) => Logic.RemovePass();
+
+        private void btExport_Click(object sender, RoutedEventArgs e) => Logic.ExportBitmap();
     }
 }

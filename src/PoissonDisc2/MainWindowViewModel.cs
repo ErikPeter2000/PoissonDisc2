@@ -25,6 +25,7 @@ namespace PoissonDisc2UI
         }
         public bool CanAddPass => RenderPassList.Count < 4;
         public bool CanDeletePass => RenderPassList.Count > 1;
+        public bool CanExport => DisplayImage != null;
 
         /// <summary>
         /// The list of render passes.
@@ -38,7 +39,10 @@ namespace PoissonDisc2UI
         public Bitmap? DisplayImage
         {
             get => _displayImage;
-            set { Set(ref _displayImage, value); }
+            set { Set(ref _displayImage, value); 
+                RaisePropertyChanged(nameof(CanExport));
+                RaisePropertyChanged(nameof(TextureDisplay));
+            }
         }
 
         public void OnLoad()
@@ -63,8 +67,7 @@ namespace PoissonDisc2UI
         public void Render(int width, int height)
         {
             var bmp = NoiseGenerator.GenerateTexture(width, height, RenderPassList.ToArray());
-            _displayImage = bmp.GetBitmap();
-            RaisePropertyChanged(nameof(TextureDisplay));
+            DisplayImage = bmp.GetBitmap();
         }
 
         /// <summary>
@@ -86,6 +89,21 @@ namespace PoissonDisc2UI
                 int temp = SelectedPass;
                 RenderPassList.RemoveAt(SelectedPass);
                 SelectedPass = Math.Min(temp, RenderPassList.Count - 1);
+            }
+        }
+
+        public void ExportBitmap()
+        {
+            if (DisplayImage == null)
+                return;
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = NoiseExporter.SaveFilter,
+                Title = "Save an Image File"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                NoiseExporter.ExportBitmap(DisplayImage, dialog.FileName);
             }
         }
     }
