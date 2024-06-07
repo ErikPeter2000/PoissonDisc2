@@ -7,8 +7,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NoiseGeneration
+namespace NoiseGeneration.Textures
 {
+    /// <summary>
+    /// Defines a texture that stores a single value per pixel.
+    /// </summary>
     public class ValueTexture : ITexture
     {
         public int DefinedChannels => 1;
@@ -19,9 +22,9 @@ namespace NoiseGeneration
 
         public float MaxDisplayValue { get; }
 
-        public bool Cache { get; private set; }
+        public bool UseCache { get; private set; }
 
-        public float[,][] ValueData { get;  set; }
+        public float[,][] ValueData { get; set; }
         private Bitmap _cacheBitmap;
 
         public ValueTexture(int width, int height, float maxDisplayValue, bool cache)
@@ -29,16 +32,19 @@ namespace NoiseGeneration
             Width = width;
             Height = height;
             MaxDisplayValue = maxDisplayValue;
-            Cache = cache;
+            UseCache = cache;
             ValueData = new float[Width, Height][];
             _cacheBitmap = new Bitmap(width, height);
         }
         public void DisableCache()
         {
-            Cache = false;
+            UseCache = false;
         }
 
-        private Bitmap renderBitmap()
+        /// <summary>
+        /// Draws the texture to a bitmap.
+        /// </summary>
+        private Bitmap renderTextureToBitmap()
         {
             _cacheBitmap = new Bitmap(Width, Height, _cacheBitmap.PixelFormat);
             var BoundsRect = new Rectangle(0, 0, _cacheBitmap.Width, _cacheBitmap.Height);
@@ -68,35 +74,40 @@ namespace NoiseGeneration
         }
 
         /// <summary>
-        /// Either returns a cached Bitmap or renders. If one is already cached, the PixelFormat is ignored.
+        /// Either returns a cached Bitmap or recalculates one from the texture. If one is already cached, the PixelFormat is ignored.
         /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public Bitmap GetBitmap()
+        /// <param name="ignoreCache">Whether to ignore any cached bitmap data. Instead, recalculate the bitmap.</param>
+        public Bitmap GetBitmap(bool ignoreCache = false)
         {
-            if (Cache)
+            if (UseCache && !ignoreCache)
             {
                 return _cacheBitmap;
             }
             else
             {
-                return renderBitmap();
+                return renderTextureToBitmap();
             }
-        }
-        public void SetPixel(int x, int y, float data)
-        {
-            float value = data;// ((x % 30>15) ^ (y % 10>5)) ? 255 : 0;
-            SetPixel(x, y, new float[]{ value });
         }
 
-        public void SetPixel(int x, int y, float[] data)
+        /// <summary>
+        /// Set a pixel in the texture.
+        /// </summary>
+        /// <param name="data">A normalised value representing the intensity of the pixel.</param>
+        public void SetPixel(int x, int y, float data)
         {
-            if (Cache)
+            if (UseCache)
             {
-                int value = (int)MathF.Min(data[0]/MaxDisplayValue*255, 255);
+                int value = (int)MathF.Min(data / MaxDisplayValue * 255, 255);
                 _cacheBitmap.SetPixel(x, y, Color.FromArgb(value, value, value));
             }
-            ValueData[x, y] = data;
+            ValueData[x, y] = new float[] { data };
+        }
+
+        /// <param name="data">A normalised value representing the intensity of the pixel. Only uses the first index for value texture.</param>
+        /// <inheritdoc/>
+        public void SetPixel(int x, int y, float[] data)
+        {
+            SetPixel(x, y, data[0]);
         }
     }
 }

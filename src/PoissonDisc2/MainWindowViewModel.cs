@@ -10,73 +10,82 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using NoiseGeneration;
+using NoiseGeneration.Enums;
+using PoissonDisc2UI.Utilities;
 using PoissonDiskLogic;
 
 namespace PoissonDisc2UI
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : SetPropertyUtils, INotifyPropertyChanged
     {
         public int _selectedPass = -1;
-        public int SelectedPass { get { return _selectedPass; } set { _selectedPass = value; RaisePropertyChanged(nameof(CanDelete)); } }
-        public bool CanAdd { get { return ParamterList.Count < 4; } }
-        public bool CanDelete { get { return SelectedPass >= 0 && ParamterList.Count > 1; } }
-        public ObservableCollection<RenderParameters> ParamterList { get; set; } = new ObservableCollection<RenderParameters>();
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public int SelectedPass { 
+            get => _selectedPass; 
+            set { Set(ref _selectedPass, value); } 
         }
-        private Bitmap texture;
+        public bool CanAddPass => RenderPassList.Count < 4;
+        public bool CanDeletePass => RenderPassList.Count > 1;
 
-        public Bitmap Texture
-        {
-            get { return texture; }
-            set { texture = value; RaisePropertyChanged(nameof(TextureDisplay)); }
-        }
+        /// <summary>
+        /// The list of render passes.
+        /// </summary>
+        public ObservableCollection<RenderPassParameters> RenderPassList { get; set; } = new ObservableCollection<RenderPassParameters>();
 
-        public void Load()
+        private Bitmap? _displayImage;
+        /// <summary>
+        /// The texture to display.
+        /// </summary>
+        public Bitmap? DisplayImage
         {
-            ParamterList.Add(new RenderParameters(GenerationType.Distance, 20, 0));
-            ParamterList.CollectionChanged += ParamterList_CollectionChanged;
-        }
-
-        private void ParamterList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            RaisePropertyChanged(nameof(CanAdd));
-            RaisePropertyChanged(nameof(CanDelete));
+            get => _displayImage;
+            set { Set(ref _displayImage, value); }
         }
 
-        public ImageSource TextureDisplay
+        public void OnLoad()
         {
-            get {
-                if (texture == null)
-                    return null;
-                else
-                    return Texture.ExtractImageSource(); }
+            RenderPassList.Add(new RenderPassParameters(GeneratorType.Distance, 20, 0));
+            RenderPassList.CollectionChanged += ParameterList_CollectionChanged;
         }
-        public void Render(int width, int height, int radius, int seed)
+
+        private void ParameterList_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var bmp = NoiseGenerator.Generate(width, height, ParamterList.ToArray());
-            texture = bmp.GetBitmap();
-            //texture = new Bitmap(width, height);
-            //foreach (var point in sampler.Points)
-            //{
-            //    texture.SetPixel((int)point.X, (int)point.Y, System.Drawing.Color.Red);
-            //}
+            RaisePropertyChanged(nameof(CanAddPass));
+            RaisePropertyChanged(nameof(CanDeletePass));
+        }
+
+        public ImageSource? TextureDisplay => DisplayImage?.ExtractImageSource();
+
+        /// <summary>
+        /// Calculate the voronoi texture.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void Render(int width, int height)
+        {
+            var bmp = NoiseGenerator.GenerateTexture(width, height, RenderPassList.ToArray());
+            _displayImage = bmp.GetBitmap();
             RaisePropertyChanged(nameof(TextureDisplay));
         }
+
+        /// <summary>
+        /// Add an empty render pass.
+        /// </summary>
         public void AddPass()
         {
-            if (ParamterList.Count < 4)
-            {
-                ParamterList.Add(new RenderParameters(GenerationType.Cell, 80, 0));
-            }
+            if (RenderPassList.Count < 4)
+                RenderPassList.Add(new RenderPassParameters(GeneratorType.Cell, 20, 0));
         }
+
+        /// <summary>
+        /// Remove the currently selected render pass.
+        /// </summary>
         public void RemovePass()
         {
-            if (ParamterList.Count > 1 && SelectedPass>=0)
+            if (RenderPassList.Count > 1 && SelectedPass >= 0)
             {
-                ParamterList.RemoveAt(SelectedPass);
+                int temp = SelectedPass;
+                RenderPassList.RemoveAt(SelectedPass);
+                SelectedPass = Math.Min(temp, RenderPassList.Count - 1);
             }
         }
     }

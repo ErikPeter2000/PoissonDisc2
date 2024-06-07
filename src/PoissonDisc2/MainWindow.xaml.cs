@@ -28,14 +28,20 @@ namespace PoissonDisc2UI
 
         private void btRender_Click(object sender, RoutedEventArgs e)
         {
-            int.TryParse(tbxWidth.Text, out int width);
-            int.TryParse(tbxHeight.Text, out int height);
-            Logic.Render(width, height, 20, 0);
+            bool success = true;
+            success &= int.TryParse(tbxWidth.Text, out int width);
+            success &= int.TryParse(tbxHeight.Text, out int height);
+            if (!success)
+            {
+                MessageBox.Show("Invalid input");
+                return;
+            }
+            Logic.Render(width, height);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Logic.Load();
+            Logic.OnLoad();
         }
 
         private void btAdd_Click(object sender, RoutedEventArgs e)

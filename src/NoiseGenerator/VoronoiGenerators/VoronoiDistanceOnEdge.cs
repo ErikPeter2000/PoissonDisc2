@@ -1,15 +1,19 @@
-﻿using PoissonDiskLogic;
+﻿using NoiseGeneration.Textures;
+using PoissonDiskLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NoiseGeneration
+namespace NoiseGeneration.VoronoiSamplers
 {
-    public class VoronoiDistanceOnEdge : INoiseAlgorithm
+    /// <summary>
+    /// Voronoi noise coloured by distance to the perpendicular bisector to the two nearest points.
+    /// </summary>
+    public class VoronoiDistanceOnEdge : IVoronoiGenerator
     {
-        public ITexture RenderNoise(Grid grid, bool cache)
+        public ITexture RenderNoise(PointVoxelStore grid, bool cache)
         {
             float max = grid.Radius;
             ValueTexture texture = new ValueTexture(grid.ResolutionX, grid.ResolutionY, max, cache);

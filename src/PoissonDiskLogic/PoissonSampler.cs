@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PoissonDiskLogic
 {
+    /// <summary>
+    /// Generate samples using Poisson disk sampling.
+    /// </summary>
     public class PoissonSampler
     {
-        public Grid InternalGrid { get; set; }
+        public PointVoxelStore InternalGrid { get; set; }
         public bool IsRendered { get; private set; } = false;
         public int RejectionCount { get; }
         public float Radius { get; }
@@ -31,7 +35,7 @@ namespace PoissonDiskLogic
             RejectionCount = rejectionCount;
             Seed = seed;
             random = new Random(seed);
-            InternalGrid = new Grid(width, height, radius);
+            InternalGrid = new PointVoxelStore(width, height, radius);
         }
         public void GenerateSamples()
         {

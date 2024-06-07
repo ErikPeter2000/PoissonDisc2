@@ -10,9 +10,12 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace PoissonDisc2UI
+namespace PoissonDisc2UI.Utilities
 {
-    public static class GraphicsHelpers
+    /// <summary>
+    /// Utility methods for managing bitmaps.
+    /// </summary>
+    public static class GraphicsUtils
     {
         [DllImport("gdi32.dll", EntryPoint = "DeleteObject")]
         [return: MarshalAs(UnmanagedType.Bool)]

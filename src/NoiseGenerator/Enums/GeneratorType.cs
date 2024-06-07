@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NoiseGeneration
+namespace NoiseGeneration.Enums
 {
-    public enum GenerationType
+    /// <summary>
+    /// Type of noise generator.
+    /// </summary>
+    public enum GeneratorType
     {
         Distance, DistanceToEdge, Cell, RawSample
     }

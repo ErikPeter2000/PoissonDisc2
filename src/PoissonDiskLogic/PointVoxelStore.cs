@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PoissonDiskLogic
 {
-    public class Grid
+    /// <summary>
+    /// Uses voxels to efficiently store and retrieve points in a 2D grid.
+    /// </summary>
+    public class PointVoxelStore
     {
         public Vector2[] InternalPoints; //list of all points
-        private bool[,] definedPoints; //checks if each cell is defined
+        private readonly bool[,] definedPoints; //checks if each cell is defined
         public int ResolutionX { get; private set; }
         public int ResolutionY { get; private set; }
         public float CellSize { get; private set; }
@@ -29,7 +33,7 @@ namespace PoissonDiskLogic
                 if (!value.HasValue)
                     throw new ArgumentNullException("Position cannot be null");
                 var pos = value.Value;
-                pos.Wrap(ResolutionX, ResolutionY);
+                pos.WrapAround(ResolutionX, ResolutionY);
                 InternalPoints[cellToIndex(cellX, cellY)] = pos;
                 definedPoints[cellX, cellY] = true;
             }
@@ -38,7 +42,7 @@ namespace PoissonDiskLogic
         {
             this[pos.X, pos.Y] = pos;
         }
-        public Grid(int width, int height, int radius)
+        public PointVoxelStore(int width, int height, int radius)
         {
             if (radius == 0)
                 throw new ArgumentException("Radius must be greater than 0");
@@ -110,19 +114,19 @@ namespace PoissonDiskLogic
                     if (IsCellOccupied(gridX, gridY))
                     {
                         Vector2 target = GetPointByIndex(cellToIndex(gridX, gridY));
-                        //tilable wrapping
-                        float targetx = target.X;
-                        float targety = target.Y;
+                        // tileable wrapping
+                        float targetX = target.X;
+                        float targetY = target.Y;
                         if (xPos + x > CellsX)
-                            targetx += ResolutionX;
+                            targetX += ResolutionX;
                         if (yPos + y > CellsY)
-                            targety += ResolutionY;
+                            targetY += ResolutionY;
                         if (xPos + x < 0)
-                            targetx -= ResolutionX;
+                            targetX -= ResolutionX;
                         if (yPos + y < 0)
-                            targety -= ResolutionY;
+                            targetY -= ResolutionY;
 
-                        float distance = pos.Distance(targetx, targety);
+                        float distance = pos.DistanceTo(new Vector2(targetX, targetY));
                         if (distance < radius)
                             return false;
                         if (distance > radius*CellSize)

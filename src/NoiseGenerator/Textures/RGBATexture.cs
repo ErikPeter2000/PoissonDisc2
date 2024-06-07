@@ -7,9 +7,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NoiseGeneration
+namespace NoiseGeneration.Textures
 {
-    public class RGBTexture : ITexture
+    // Maybe define separate implementations of ITexture for RGB and RGBA textures
+    /// <summary>
+    /// Texture that stores RGB/RGBA values.
+    /// </summary>
+    public class RGBATexture : ITexture
     {
         public int DefinedChannels { get; } = 3;
 
@@ -19,18 +23,18 @@ namespace NoiseGeneration
 
         public float MaxDisplayValue { get; }
 
-        public bool Cache { get; private set; }
+        public bool UseCache { get; private set; }
 
-        public float[,][] ValueData { get;  set; }
+        public float[,][] ValueData { get; set; }
         private Bitmap _cacheBitmap;
 
-        private bool Alpha;
-        public RGBTexture(int width, int height, float maxDisplayValue, bool cache, int channels)
+        private readonly bool Alpha;
+        public RGBATexture(int width, int height, float maxDisplayValue, bool cache, int channels)
         {
             Width = width;
             Height = height;
             MaxDisplayValue = maxDisplayValue;
-            Cache = cache;
+            UseCache = cache;
             ValueData = new float[Width, Height][];
             DefinedChannels = channels;
             if (DefinedChannels == 4)
@@ -41,10 +45,7 @@ namespace NoiseGeneration
             else
                 _cacheBitmap = new Bitmap(width, height, PixelFormat.Format48bppRgb);
         }
-        public void DisableCache()
-        {
-            Cache = false;
-        }
+        public void DisableCache() => UseCache = false;
 
         private Bitmap renderBitmap()
         {
@@ -64,31 +65,16 @@ namespace NoiseGeneration
         /// Either returns a cached Bitmap or renders. If one is already cached, the PixelFormat is ignored.
         /// </summary>
         /// <param name="format"></param>
-        /// <returns></returns>
-        public Bitmap GetBitmap()
-        {
-            if (Cache)
-            {
-                return _cacheBitmap;
-            }
-            else
-            {
-                return renderBitmap();
-            }
-        }
-        public void SetPixel(int x, int y, float data)
-        {
-            SetPixel(x, y, data);
-        }
+        public Bitmap GetBitmap(bool ignoreCache) =>UseCache && !ignoreCache ? _cacheBitmap : renderBitmap();
 
         public void SetPixel(int x, int y, float[] data)
         {
-            if (Cache)
+            if (UseCache)
             {
-                int r = (int)MathF.Min(data[0]/MaxDisplayValue*255, 255);
+                int r = (int)MathF.Min(data[0] / MaxDisplayValue * 255, 255);
                 int g = (int)MathF.Min(data[1] / MaxDisplayValue * 255, 255);
                 int b = 0;
-                if (DefinedChannels>2)
+                if (DefinedChannels > 2)
                     b = (int)MathF.Min(data[2] / MaxDisplayValue * 255, 255);
                 if (Alpha)
                 {
