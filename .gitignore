@@ -1,9 +1,8 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/src/PoissonDisc2/.vs/PoissonDisc2
-/src/PoissonDisc2/bin/Debug/net6.0-windows
+﻿/src/PoissonDisc2/bin
 /src/PoissonDisc2/obj
-/src/PoissonDiskLogic/bin/Debug/net6.0
+/src/PoissonDisc2/.vs
+/src/PoissonDiskLogic/bin
 /src/PoissonDiskLogic/obj
+/src/NoiseGenerator/bin
+/src/NoiseGenerator/obj
+/.vs
